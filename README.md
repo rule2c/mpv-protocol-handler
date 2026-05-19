@@ -12,35 +12,41 @@ mpv://play/aHR0cDovLzE5Mi4xNjguMS4xMDE6...
 
 ## Install
 
-### Current user, no administrator required
+### Copy the handler
 
 Copy `dist\mpv-protocol-handler.exe` to:
 
 ```text
-%LOCALAPPDATA%\mpv-protocol-handler\mpv-protocol-handler.exe
+C:\Program Files\mpv.net\mpv-protocol-handler.exe
 ```
 
-Then import:
+This keeps the handler beside `mpvnet.exe`. Copying into `C:\Program Files` requires administrator permission.
+
+### Current user protocol registration
+
+Import:
 
 ```text
 registry\register-current-user.reg
 ```
 
-You can also run:
+This registers only the current Windows user, but still expects the executable at:
+
+```text
+C:\Program Files\mpv.net\mpv-protocol-handler.exe
+```
+
+You can also run PowerShell as administrator:
 
 ```powershell
 .\scripts\install-current-user.ps1
 ```
 
-### All users, administrator required
+If UAC asks for a different administrator account, import `registry\register-current-user.reg` again after the copy step while signed in as the target user.
 
-Copy `dist\mpv-protocol-handler.exe` to:
+### All users protocol registration
 
-```text
-C:\Program Files\mpv-protocol-handler\mpv-protocol-handler.exe
-```
-
-Then import:
+Import as administrator:
 
 ```text
 registry\register-all-users.reg
@@ -55,6 +61,8 @@ You can also run an elevated PowerShell:
 After installation, click the `MPV` button in Emby/Xiaoya.
 
 The browser prompt should mention `mpv-protocol-handler.exe`, not Windows PowerShell.
+
+If it still mentions Windows PowerShell, the current user probably still has an old `HKCU\Software\Classes\mpv` registration. Import `registry\register-current-user.reg` for that user, or remove the stale per-user key with `registry\remove-current-user.reg` so the all-users `HKLM` registration can take effect.
 
 ## Player lookup order
 
@@ -87,6 +95,5 @@ Import the matching removal file:
 Then delete:
 
 ```text
-C:\Program Files\mpv-protocol-handler
-%LOCALAPPDATA%\mpv-protocol-handler
+C:\Program Files\mpv.net\mpv-protocol-handler.exe
 ```
